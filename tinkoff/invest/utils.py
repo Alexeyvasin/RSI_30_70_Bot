@@ -1,6 +1,6 @@
 import ast
 import dataclasses
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, UTC
 from decimal import Decimal
 from enum import Enum
 from typing import Any, Callable, Generator, Iterable, List, Protocol, Tuple
@@ -92,7 +92,7 @@ def candle_interval_to_subscription_interval(
 
 
 def now() -> datetime:
-    return datetime.utcnow().replace(tzinfo=timezone.utc)
+    return datetime.now(UTC).replace(tzinfo=timezone.utc)
 
 
 _CANDLE_INTERVAL_TO_TIMEDELTA_MAPPING = {
