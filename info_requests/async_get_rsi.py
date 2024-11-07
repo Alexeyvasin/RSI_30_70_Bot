@@ -73,9 +73,11 @@ async def get_rsi(
 async def main():
     instruments = await get_instruments()
     semaphore = asyncio.Semaphore(15)
+    ticker = 'GOLD'
     coro = (
         get_rsi(instrument=instrument, semaphore=semaphore, days_ago=3)
         for instrument in instruments
+        if instrument.ticker  == ticker
     )
     coro_tup = tuple(coro)
     print(len(coro_tup))

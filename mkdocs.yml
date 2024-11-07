@@ -1,6 +1,6 @@
 site_name: Tinkoff Invest Python SDK
 site_url: https://RussianInvestments.github.io/invest-python/
-site_description: 'Python SDK, gRPC client, bot examples'
+site_description: 'Python SDK, gRPC client, rsi_30_70_bot examples'
 
 repo_name: 'RussianInvestments/invest-python'
 repo_url: 'https://github.com/RussianInvestments/invest-python'

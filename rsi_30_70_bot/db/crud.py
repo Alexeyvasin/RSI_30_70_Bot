@@ -31,3 +31,26 @@ async def get_exclude_instruments():
     tuple(exclude_instruments.append(value['value']) for value in values)
     print('*exclude_inst', exclude_instruments)
     return exclude_instruments
+
+async def del_all_exclude_instruments():
+    conn = await connect()
+    await conn.execute('''
+                DELETE FROM filters   WHERE "Key" = $1''', 'exclude_instrument'
+                       )
+    conn.close()
+
+async def del_instrument(instrument):
+    conn = await connect()
+    await conn.execute('''
+                DELETE FROM filters   WHERE "Key" = $1 and "value" =  $2''',
+                       'exclude_instrument', instrument
+                       )
+    conn.close()
+
+async def add_instrument(instrument):
+    conn = await connect()
+    await conn.execute('''
+                INSERT INTO  filters ("Key", "value") VALUES ($1, $2)''',
+                       'exclude_instrument', instrument
+                       )
+    conn.close()

@@ -8,9 +8,9 @@ from info_requests import async_get_rsi as rsi
 from info_requests import async_get_instruments  as in_ts
 
 
-from  bot import bot
+from  rsi_30_70_bot.bot import bot
 
-
+lock = asyncio.Lock()
 async def rsi_30_70(instrument, semaphore=None):
     if  semaphore is None:
         semaphore   = asyncio.Semaphore(1)
@@ -19,7 +19,9 @@ async def rsi_30_70(instrument, semaphore=None):
         if res:
             if (unit := int(res[-1].signal.units)) >= 70 or (unit := int(res[-1].signal.units)) < 30:
                 try:
-                    await bot.send_message(-4566773371, f'@AlexInvestorBot {instrument.ticker}={unit}. {res[-1]}')
+                    async with lock:
+                        await bot.send_message(-4566773371, f'@AlexInvestorBot {instrument.ticker}={unit}. {res[-1]}')
+                        await asyncio.sleep(3)
                 except TelegramRetryAfter as e:
                     print(f"Rate limit exceeded. Retrying after {e.retry_after} seconds...")
                     await asyncio.sleep(e.retry_after)
@@ -30,7 +32,7 @@ async def rsi_30_70(instrument, semaphore=None):
 async  def main():
     semaphore = asyncio.Semaphore(15)
     instruments = await in_ts.get_instruments()
-    coro   = (rsi_30_70(instrument, semaphore)
+    coro   = (rsi_30_70(instrument, semaphore=semaphore)
               for instrument in instruments
               if instrument.trading_status in allowed_trading_status)
     await asyncio.gather(*coro)

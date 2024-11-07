@@ -3,16 +3,18 @@ from dotenv   import load_dotenv
 
 from aiogram  import Bot, Dispatcher, types
 try:
-    from routers import router
+    from rsi_30_70_bot.routers import router
 except ModuleNotFoundError:
-    from bot.routers import router
+    from .routers import router
 
 
 load_dotenv()
 
 dp   = Dispatcher()
-
-dp.include_router(router)
+try:
+    dp.include_router(router)
+except RuntimeError:
+    print('Router already  attached')
 
 TOKEN  = os.getenv('BOT_TOKEN')
 

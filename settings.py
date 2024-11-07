@@ -7,6 +7,6 @@ allowed_trading_status = (
 
 )
 
-time_of_repeat = 15
+time_of_repeat = 60
 
 exclude_instruments = []
