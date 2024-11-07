@@ -3,6 +3,7 @@ import os
 from datetime import timedelta
 
 from grpc import StatusCode
+from pprint import pprint
 
 
 from tinkoff.invest import AsyncClient, AioRequestError
@@ -30,7 +31,7 @@ async def get_rsi(
         semaphore=None,
         days_ago=3,
         interval=IndicatorInterval.INDICATOR_INTERVAL_ONE_HOUR,
-        type_of_price=TypeOfPrice.TYPE_OF_PRICE_AVG,
+        type_of_price=TypeOfPrice.TYPE_OF_PRICE_CLOSE,
         length=14
 ):
     if semaphore is None:
@@ -79,9 +80,17 @@ async def main():
         for instrument in instruments
         if instrument.ticker  == ticker
     )
+    for   instrument  in  instruments:
+        if  instrument.ticker  ==   ticker:
+            print(instrument.ticker, instrument.uid, instrument.name)
     coro_tup = tuple(coro)
     print(len(coro_tup))
-    await asyncio.gather(*coro_tup)
+    res = await asyncio.gather(*coro_tup)
+    pprint(res)
+    for  r in res:
+        if r is not  None:
+            for indicator in r:
+                print(indicator.timestamp,  round((indicator.signal.nano/10**9 + int(indicator.signal.units)), 2))
 
     # for instrument in instruments:
     #
